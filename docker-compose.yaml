@@ -1,0 +1,62 @@
+version: '2'
+services:
+  http-client:
+    build:
+      context: http-client
+      dockerfile: Dockerfile
+    networks:
+      - my-network
+    ports:
+      - '3000:3000'
+    depends_on:
+      db:
+        condition: service_healthy
+      redis-docker:
+        condition: service_healthy
+  orders-microservice:
+    build:
+      context: orders-microservice
+      dockerfile: Dockerfile
+    networks:
+      - my-network
+    depends_on:
+      db:
+        condition: service_healthy
+      redis-docker:
+        condition: service_healthy
+  db:
+    container_name: mysql
+    image: mysql
+    networks:
+      - my-network
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 'root'
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "mysql", "-u", "root", "-proot"]
+      interval: 1s
+      timeout: 3s
+      retries: 30
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    volumes:
+      - ./mysql-dump:/docker-entrypoint-initdb.d
+  redis-docker:
+    container_name: redis-docker
+    image: redis
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 1s
+      timeout: 3s
+      retries: 30
+    networks:
+      - my-network
+    ports:
+      - '6379:6379'
+    # command: ["redis-server", "--appendonly", "yes"]
+networks:
+  my-network:
+    driver: bridge

@@ -6,14 +6,22 @@ import { Users } from './entities/users.entity';
 
 @Injectable()
 export class UsersService {
+
+  // Create Logger
   private readonly logger = new Logger(UsersService.name);
+
+  // Inject user entity
   constructor(
     @InjectRepository(Users)
     private readonly userRepository: Repository<Users>,
   ) { }
 
   async findOne(userQueryParams: object): Promise<Users> {
+
+    // find user in db
     const userEntityFound = await this.userRepository.findOne(userQueryParams);
+
+    // if user dont exist
     if (userEntityFound === undefined) {
       throw new HttpException(
         `User not found. ${JSON.stringify(userQueryParams)}`,
@@ -24,8 +32,9 @@ export class UsersService {
     return userEntityFound;
   }
 
+
+  // function to send data to the function that search entities
   async getUserById(id: string): Promise<Users> {
-    this.logger.log(`input ${id}`);
     return await this.findOne({ id });
   }
 

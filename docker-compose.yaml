@@ -2,6 +2,7 @@ version: '2'
 services:
   
   http-client:
+    container_name: http-client
     build:
       context: http-client
       dockerfile: Dockerfile
@@ -16,6 +17,7 @@ services:
         condition: service_healthy
 
   orders-microservice:
+    container_name: orders-microservice
     build:
       context: orders-microservice
       dockerfile: Dockerfile
@@ -28,6 +30,7 @@ services:
         condition: service_healthy
 
   payments-microservice:
+    container_name: payments-microservice
     build:
       context: payments-microservice
       dockerfile: Dockerfile
@@ -40,6 +43,7 @@ services:
         condition: service_healthy
 
   users-microservice:
+    container_name: users-microservice
     build:
       context: users-microservice
       dockerfile: Dockerfile
@@ -52,6 +56,7 @@ services:
         condition: service_healthy
 
   products-microservice:
+    container_name: products-microservice
     build:
       context: products-microservice
       dockerfile: Dockerfile
@@ -64,6 +69,7 @@ services:
         condition: service_healthy
 
   carts-microservice:
+    container_name: carts-microservice
     build:
       context: carts-microservice
       dockerfile: Dockerfile
@@ -109,7 +115,6 @@ services:
       - my-network
     ports:
       - '6379:6379'
-    # command: ["redis-server", "--appendonly", "yes"]
 networks:
   my-network:
     driver: bridge

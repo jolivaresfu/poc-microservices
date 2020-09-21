@@ -5,6 +5,8 @@ import { AppModule } from './app.module';
 
 const logger = new Logger('Main');
 
+
+// create tcp client to receive messages from REDIS
 const microserviceOptions = {
   transport: Transport.REDIS,
   options: {

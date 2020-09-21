@@ -8,6 +8,8 @@ export class AppService {
 
   private readonly logger = new Logger(AppService.name);
   constructor() {
+
+    // Create TCP Redis client to send messages to the differents microservices
     this.client = ClientProxyFactory.create({
       transport: Transport.REDIS,
       options: {
@@ -17,7 +19,9 @@ export class AppService {
   }
 
 
+  // Return the products associated to the cart items
   async sweepProducts(cartItems) {
+
     const products = [];
     for (const items of cartItems) {
       products.push(await this.client.send<any, string>('getProductsById', items.product_id).toPromise());
@@ -29,18 +33,28 @@ export class AppService {
   async getProductsPaidByUserId(data: string) {
 
     let products = [];
+
+    // find orders associated to a user by id
     const orders = await this.client.send<any, string>('getOrderByUserId', data).toPromise();
-    // this.logger.log('orders', inspect(orders));
+
+
+    // Find orders that been PAID 
     for (const element of orders) {
       const payment = await this.client.send<any, string>('getPaymentByOrderId', element.id).toPromise();
-      // this.logger.log('payment', inspect(payment));
       if (payment.status === 'PAID') {
+        // If the order is PAID, now we can find the products of this order
+
+        // find cart by order id
         const cart = await this.client.send<any, string>('getCartsByOrder', payment.order_id).toPromise();
+
+        // find cart items by cart id
         const cartItems = await this.client.send<any, string>('getCartsItemsByCartId', cart.id).toPromise();
+
+        // find products related to this cart items 
         products.push(await this.sweepProducts(cartItems));
       }
     }
-
+    // return only one array of products instead of array of arrays
     return [].concat(...products);
   }
 
@@ -48,14 +62,20 @@ export class AppService {
   async getProductsPaymentExternalReference(data: string) {
 
     const products = [];
-    const payment = await this.client.send<any, string>('getPaymentByExternalReferenceId', data).toPromise();
-    this.logger.log('payment', inspect(payment.order_id));
-    const cart = await this.client.send<any, string>('getCartsByOrder', payment.order_id).toPromise();
-    this.logger.log('cart', inspect(cart));
 
+    // find payment by external reference id
+    const payment = await this.client.send<any, string>('getPaymentByExternalReferenceId', data).toPromise();
+
+    // find cart by order id
+    const cart = await this.client.send<any, string>('getCartsByOrder', payment.order_id).toPromise();
+
+    // find cart items by cart id
     const cartItems = await this.client.send<any, string>('getCartsItemsByCartId', cart.id).toPromise();
+
+    // find products related to this cart items 
     products.push(await this.sweepProducts(cartItems));
 
+    // return only one array of products instead of array of arrays
     return [].concat(...products);
 
   }
@@ -64,18 +84,19 @@ export class AppService {
   async getPorductsCartsByUserId(data: string) {
 
     const products = [];
+
+    // get cart by user id
     const cart = await this.client.send<any, string>('getCartsByUserId', data).toPromise();
+
+    // get cart items by an user id
     const cartItems = await this.client.send<any, string>('getCartsItemsByCartId', cart.id).toPromise();
 
+    // find products related to this cart items 
     products.push(await this.sweepProducts(cartItems));
 
+    // return only one array of products instead of array of arrays
     return [].concat(...products);
 
   }
 
-
-  async getOrder(data: string) {
-
-    return await this.client.send<any, string>('getOrderById', data).toPromise();
-  }
 }

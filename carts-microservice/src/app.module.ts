@@ -26,8 +26,11 @@ import { CartsItemsService } from './carts-items.service';
       path.resolve(__dirname, 'config', '**', '!(*.d).{ts,js}'),
     ),
     TypeOrmModule.forRootAsync({
+
+      // load database
       useFactory: (config: ConfigService) => {
 
+        // get carts-db config file
         const mergedOpts = {
           ...config.get('carts-db'),
           // logger: new Logger('Custom'),// TODO: Log querys and stuff

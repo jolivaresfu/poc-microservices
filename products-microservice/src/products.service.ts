@@ -6,13 +6,20 @@ import { Products } from './entities/products.entity';
 
 @Injectable()
 export class ProductsService {
+
+  // Create logger
   private readonly logger = new Logger(ProductsService.name);
+
+  // Inject products repository
   constructor(
     @InjectRepository(Products)
     private readonly productsRepository: Repository<Products>,
   ) { }
 
+
   async findOne(productsQueryParams: object): Promise<Products> {
+
+    // find product in db
     const productFound = await this.productsRepository.findOne(productsQueryParams);
     if (productFound === undefined) {
       throw new HttpException(
@@ -20,14 +27,13 @@ export class ProductsService {
         HttpStatus.NOT_FOUND,
       );
     }
-    this.logger.log(`Cart Found ${inspect(productFound)}`);
+    this.logger.log(`Product Found ${inspect(productFound)}`);
     return productFound;
   }
 
+  // function to send the data to the function that finds entities
   async getProductsById(id: string): Promise<Products> {
-    this.logger.log(`input ${id}`);
     return await this.findOne({ id });
   }
-
 
 }

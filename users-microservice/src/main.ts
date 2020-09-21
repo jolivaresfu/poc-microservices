@@ -1,3 +1,4 @@
+require('dotenv').config();
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { Transport } from '@nestjs/microservices';
@@ -9,7 +10,7 @@ const logger = new Logger('Main');
 const microserviceOptions = {
   transport: Transport.REDIS,
   options: {
-    url: 'redis://redis-docker:6379',
+    url: process.env.REDIS_URL,
   },
 };
 

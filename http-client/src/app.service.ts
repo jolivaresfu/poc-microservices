@@ -1,19 +1,18 @@
-import { forwardRef, Injectable, Logger } from "@nestjs/common";
+require('dotenv').config();
+import { Injectable, Logger } from "@nestjs/common";
 import { ClientProxy, ClientProxyFactory, Transport } from "@nestjs/microservices";
-import { inspect } from "util";
 
 @Injectable()
 export class AppService {
   private client: ClientProxy;
 
-  private readonly logger = new Logger(AppService.name);
   constructor() {
 
     // Create TCP Redis client to send messages to the differents microservices
     this.client = ClientProxyFactory.create({
       transport: Transport.REDIS,
       options: {
-        url: 'redis://redis-docker:6379'
+        url: process.env.REDIS_URL,
       },
     })
   }

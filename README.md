@@ -14,7 +14,7 @@ Utilize Nest como framework para esta POC, ademas de MySQL para la base de datos
 
 Cada microservicio esta conectado a una base de datos (levantadas por el docker-compose.yaml). Las conexiones se realizaron con [TypeORM](https://docs.nestjs.com/recipes/sql-typeorm).
 
-Cree un http-client para interactuar con los microservicios, y desde aqui enviar los mensajer a REDIS, para que los microservicios los reciban y puedan devolverme la data necesaria.
+Cree un http-client para interactuar con los microservicios, y desde aqui enviar los mensajes a REDIS, para que los microservicios los reciban y puedan devolverme la data necesaria.
 
 Cada microservicio es dueño de su data y solo devuelven la informacion que conocen en su base de datos, el http client es el que se encarga de recibir esa data e ir consultando en los distintos microservicios de acuerdo a la data que le entregan.
 

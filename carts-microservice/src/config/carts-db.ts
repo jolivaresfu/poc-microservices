@@ -1,7 +1,7 @@
 export default {
     type: 'mysql',
     name: 'carts-db',
-    host: 'localhost',
+    host: 'mysql',
     username: 'root',
     password: 'root',
     database: 'carts_db',

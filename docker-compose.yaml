@@ -1,5 +1,6 @@
 version: '2'
 services:
+  
   http-client:
     build:
       context: http-client
@@ -13,6 +14,7 @@ services:
         condition: service_healthy
       redis-docker:
         condition: service_healthy
+
   orders-microservice:
     build:
       context: orders-microservice
@@ -24,6 +26,56 @@ services:
         condition: service_healthy
       redis-docker:
         condition: service_healthy
+
+  payments-microservice:
+    build:
+      context: payments-microservice
+      dockerfile: Dockerfile
+    networks:
+      - my-network
+    depends_on:
+      db:
+        condition: service_healthy
+      redis-docker:
+        condition: service_healthy
+
+  users-microservice:
+    build:
+      context: users-microservice
+      dockerfile: Dockerfile
+    networks:
+      - my-network
+    depends_on:
+      db:
+        condition: service_healthy
+      redis-docker:
+        condition: service_healthy
+
+  products-microservice:
+    build:
+      context: products-microservice
+      dockerfile: Dockerfile
+    networks:
+      - my-network
+    depends_on:
+      db:
+        condition: service_healthy
+      redis-docker:
+        condition: service_healthy
+
+  carts-microservice:
+    build:
+      context: carts-microservice
+      dockerfile: Dockerfile
+    networks:
+      - my-network
+    depends_on:
+      db:
+        condition: service_healthy
+      redis-docker:
+        condition: service_healthy
+
+  
   db:
     container_name: mysql
     image: mysql
@@ -44,6 +96,7 @@ services:
       - '3306'
     volumes:
       - ./mysql-dump:/docker-entrypoint-initdb.d
+      
   redis-docker:
     container_name: redis-docker
     image: redis

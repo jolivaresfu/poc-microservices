@@ -1,7 +1,7 @@
 export default {
     type: 'mysql',
     name: 'payments-db',
-    host: 'localhost',
+    host: 'mysql',
     username: 'root',
     password: 'root',
     database: 'payments_db',

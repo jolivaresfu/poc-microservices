@@ -29,7 +29,6 @@ import * as path from 'path';
           ...config.get('users-db'),
           // logger: new Logger('Custom'),// TODO: Log querys and stuff
         };
-        console.log(mergedOpts)
         return mergedOpts;
       },
       inject: [ConfigService],

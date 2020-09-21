@@ -28,7 +28,6 @@ import { Products } from 'src/entities/products.entity';
           ...config.get('products-db'),
           // logger: new Logger('Custom'),// TODO: Log querys and stuff
         };
-        console.log('mergedOpts', mergedOpts);
         return mergedOpts;
       },
       inject: [ConfigService],
